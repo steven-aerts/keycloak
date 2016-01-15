@@ -27,6 +27,11 @@ public class KeycloakSessionServletFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        String requestURI = ((HttpServletRequest) servletRequest).getRequestURI();
+        if (requestURI.startsWith("/auth/realms/test/clients/openid-connect")) {
+            System.out.println("START " + requestURI);
+        }
+
         servletRequest.setCharacterEncoding("UTF-8");
 
         final HttpServletRequest request = (HttpServletRequest)servletRequest;
@@ -59,6 +64,15 @@ public class KeycloakSessionServletFilter implements Filter {
 
         try {
             filterChain.doFilter(servletRequest, servletResponse);
+            if (requestURI.equals("/auth/realms/test/clients/openid-connect")) {
+                System.out.println("SLEEP " + requestURI);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
             if (tx.isActive()) {
                 if (tx.getRollbackOnly()) tx.rollback();
                 else tx.commit();
@@ -78,6 +92,9 @@ public class KeycloakSessionServletFilter implements Filter {
             ResteasyProviderFactory.clearContextData();
         }
 
+        if (requestURI.startsWith("/auth/realms/test/clients/openid-connect")) {
+            System.out.println("DONE " + requestURI);
+        }
     }
 
     @Override
