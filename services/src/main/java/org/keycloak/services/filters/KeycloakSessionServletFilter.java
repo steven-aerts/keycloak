@@ -67,7 +67,7 @@ public class KeycloakSessionServletFilter implements Filter {
             if (requestURI.equals("/auth/realms/test/clients/openid-connect")) {
                 System.out.println("SLEEP " + requestURI);
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
